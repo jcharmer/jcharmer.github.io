@@ -44,8 +44,30 @@ The workflow at `.github/workflows/deploy.yml` builds and deploys on every
 push to `main`. Make sure Repo Settings → Pages → Source is set to
 **GitHub Actions** (not "Deploy from a branch").
 
-Custom domain (later): add a `CNAME` file at repo root with the domain, set
-the DNS records GitHub shows you, and update `site` in `astro.config.mjs`.
+## Custom domain setup (when ready)
+
+1. Buy a domain at any registrar (Cloudflare, Namecheap, Porkbun, etc).
+2. Add DNS records at the registrar:
+   - **Apex (`example.com`)**: four A records to GitHub's IPs:
+     ```
+     185.199.108.153
+     185.199.109.153
+     185.199.110.153
+     185.199.111.153
+     ```
+     Plus a `www` CNAME → `jcharmer.github.io` if you want both to work.
+   - **Subdomain only (`www.example.com`, `site.example.com`, etc.)**: one
+     CNAME record → `jcharmer.github.io`.
+3. Add a `CNAME` file at `public/CNAME` with the domain on one line
+   (no protocol, no trailing slash). It must live in `public/` so Astro
+   copies it to `dist/` on every build — otherwise the deploy wipes it out
+   and GitHub drops the custom-domain config.
+4. Update `site` in `astro.config.mjs` to the new domain (e.g.
+   `https://example.com`). Affects sitemap and absolute URLs.
+5. Repo Settings → Pages → Custom domain: enter the domain. After DNS
+   resolves, turn on **Enforce HTTPS**.
+
+DNS propagation usually takes 5–60 minutes; Cloudflare is near-instant.
 
 ## Known issues / next steps
 
