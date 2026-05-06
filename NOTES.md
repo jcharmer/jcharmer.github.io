@@ -4,57 +4,61 @@ Picking up on another device? Start here.
 
 ## What's in this repo
 
-Imported from the Claude Design bundle `crewdriver-design-system` (handoff
-from claude.ai/design):
+Astro static site (deployed to GitHub Pages) wrapping the design bundle
+imported from claude.ai/design (`crewdriver-design-system`).
 
-- `variants/index.html` — gallery page linking to 10 homepage concepts
-- `variants/v1.html` … `v10.html` — the 10 standalone concept pages
-- `variants/thumbs/` — gallery thumbnails (jpg)
-- `colors_and_type.css` — shared color tokens + ChunkFive `@font-face`
-- `fonts/ChunkFive-Regular.{woff2,woff,ttf}` — display font
-- `assets/icon.png` — favicon
+```
+src/
+  layouts/Layout.astro       shared <head>, favicon, font tokens
+  pages/index.astro          gallery (the only Astro page so far)
+public/
+  v1/index.html … v10/index.html   the 10 self-contained variant pages
+  thumbs/                    gallery thumbnails
+  colors_and_type.css        shared color tokens + ChunkFive @font-face
+  fonts/ChunkFive-Regular.*  display font (woff2/woff/ttf)
+  assets/icon.png            favicon
+astro.config.mjs             site + base configured for jcharmer.github.io/homepage/
+.github/workflows/deploy.yml GitHub Pages deploy (Astro action)
+```
 
-The variant pages are self-contained (CSS inline). `variants/index.html` is
-the only file that imports `../colors_and_type.css` and the favicon.
+The variant pages (v1–v10) are still raw HTML with inline CSS — they were
+self-contained, so they live in `public/` and Astro serves them as-is at
+`/v1/`, `/v2/`, etc. Convert them to `.astro` later when you want to share
+chrome between them.
 
-Open `variants/index.html` in a browser to see the gallery.
+## Local development
 
-## Hosting decision
+```sh
+npm install
+npm run dev      # http://localhost:4321/homepage/
+npm run build    # writes dist/
+npm run preview  # serve dist/
+```
 
-**Ship on GitHub Pages now. Port to Astro later if duplication forces it.**
+## Deploy on GitHub Pages
 
-Why:
-- Files are already plain HTML, no build step.
-- GitHub Pages is zero-config for this layout: enable in repo Settings →
-  Pages, point at this branch (or `main` once merged), and
-  `https://jcharmer.github.io/homepage/variants/` is live.
-- Cloudflare Pages is the alternative if you want a faster CDN / easier
-  custom domain — same "deploy from repo" flow, no build command.
+The workflow at `.github/workflows/deploy.yml` builds and deploys on every
+push to `main`. To turn it on:
 
-When to switch to Astro:
-- Once you start duplicating headers/footers/nav across the 10 pages.
-- Once you want content collections, MDX, or a real component model.
-- Astro deploys cleanly to GitHub Pages, Cloudflare Pages, Netlify, Vercel.
+1. Merge this branch to `main`.
+2. Repo Settings → Pages → Source: **GitHub Actions** (not "Deploy from a branch").
+3. Push to `main`. The workflow runs and publishes
+   `https://jcharmer.github.io/homepage/`.
 
-Other frameworks (Next, Hugo, Jekyll, 11ty, Gatsby, Nuxt, SvelteKit,
-Docusaurus, MkDocs, VitePress) are fine but overkill for the current state.
+Custom domain (later): add a `CNAME` file at repo root with the domain, set
+the DNS records GitHub shows you, and update `site` in `astro.config.mjs`.
 
-## Deploy on GitHub Pages (when ready)
+## Known issues / next steps
 
-1. Merge this branch to `main` (or set Pages source to this branch).
-2. Repo Settings → Pages → Source: deploy from branch → `main` / `/ (root)`.
-3. Wait ~1 min, visit `https://jcharmer.github.io/homepage/variants/`.
-4. Custom domain: add a `CNAME` file at repo root with the domain, then
-   set the DNS records GitHub shows you.
-
-## Next steps / open questions
-
-- Pick a landing variant (or keep the gallery as `/` for now).
-- Decide on custom domain.
-- If/when porting to Astro: one `Layout.astro` + one `[variant].astro`
-  page using the existing v1–v10 markup as content.
+- The gallery's inline CSS references `--cd-border` and `--cd-primary`,
+  which aren't defined in `colors_and_type.css`. Borders render transparent
+  and the primary color falls back. Map them to `--cd-rule` and `--cd-green`
+  (or add them to the token file).
+- Pick a landing variant if you don't want the gallery to be `/`.
+- When you're ready to share headers/footers/nav across variants: convert
+  `public/v[N]/index.html` → `src/pages/v[N].astro` using `Layout.astro`.
 
 ## Branch
 
-Working branch: `claude/add-local-files-G5ZNM`. No `main` branch exists
-yet — first push created the repo's initial history here.
+Working branch: `claude/review-repo-info-EH95P`. The repo has no `main`
+branch yet — first push of this branch (or a merge) creates it.
