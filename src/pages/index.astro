@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const variants = [
+  { n: 1, title: 'Automation is a dirty word', sub: 'Anchor-line hero · full-spread editorial' },
+  { n: 2, title: 'Built for the Crew', sub: 'Worker-first positioning · rigger portraits' },
+  { n: 3, title: 'Stop Doing It By Hand', sub: 'Sunday phone-tree lament · problem-forward' },
+  { n: 4, title: '150,000 Placements', sub: 'Stats-led · proof as hero' },
+  { n: 5, title: 'No one understands', sub: 'Empathy hero · production-native voice' },
+  { n: 6, title: 'Built for IATSE Union Halls', sub: 'Union-hall vertical · seniority-first' },
+  { n: 7, title: 'Build relationships, not spreadsheets', sub: 'Relationship-led · softest voice' },
+  { n: 8, title: 'Dirty word — display', sub: 'Display-typography experiment · oversized ChunkFive' },
+  { n: 9, title: 'Social Proof Wall', sub: 'Testimonial-led · dispatcher quotes as hero' },
+  { n: 10, title: 'Which one are you?', sub: 'Persona-router · self-select into flow' },
+];
+
+const base = import.meta.env.BASE_URL;
+---
+<Layout title="CrewDriver — 10 homepage variants">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">10 homepage directions</div>
+      <div class="rule"></div>
+      <h1 class="h1">Variant gallery</h1>
+      <p class="lead">Ten homepage concepts imported from <code>jcharmer/crewdriver-main-website · build/variations/</code> — each takes a different angle on the same product. Click any card to open the full page in a new tab.</p>
+    </div>
+    <div class="grid">
+      {variants.map((v) => (
+        <a class="v" href={`${base}v${v.n}/`} target="_blank" rel="noopener">
+          <div class="v__frame">
+            <img src={`${base}thumbs/v${v.n}.jpg`} alt={v.title} loading="lazy" />
+          </div>
+          <div class="v__meta">
+            <div class="v__tag">V{v.n}</div>
+            <div class="v__title">{v.title}</div>
+            <div class="v__sub">{v.sub}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--cd-near-black);color:var(--cd-fg-2);font-family:var(--cd-font-body)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1400px;margin:0 auto;padding:48px 40px 96px}
+  .head{margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--cd-border)}
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--cd-primary);margin-bottom:10px}
+  .rule{width:40px;height:2px;background:rgba(92,184,92,.5);margin-bottom:18px}
+  .h1{font-family:var(--cd-font-display);font-size:44px;line-height:1;text-transform:uppercase;letter-spacing:.5px;color:#fff;margin:0 0 14px}
+  .lead{font-size:16px;color:var(--cd-fg-3);max-width:720px;line-height:1.65;margin:0}
+  .lead code{font-family:var(--cd-font-mono);color:var(--cd-fg-2);background:rgba(255,255,255,.04);padding:1px 6px;font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .v{display:flex;flex-direction:column;background:var(--cd-charcoal);border:1px solid var(--cd-border);transition:border-color .15s}
+  .v:hover{border-color:var(--cd-primary)}
+  .v__frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#0a0a0a;border-bottom:1px solid var(--cd-border)}
+  .v__frame img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .v__meta{padding:20px 24px 24px;display:flex;flex-direction:column;gap:4px}
+  .v__tag{font-family:var(--cd-font-mono);font-size:11px;color:var(--cd-primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+  .v__title{font-family:var(--cd-font-display);font-size:20px;text-transform:uppercase;letter-spacing:.5px;color:#fff;line-height:1.15}
+  .v__sub{font-size:13px;color:var(--cd-fg-4);line-height:1.5;margin-top:4px}
+</style>
