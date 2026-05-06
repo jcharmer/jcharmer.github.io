@@ -17,7 +17,7 @@ public/
   colors_and_type.css        shared color tokens + ChunkFive @font-face
   fonts/ChunkFive-Regular.*  display font (woff2/woff/ttf)
   assets/icon.png            favicon
-astro.config.mjs             site + base configured for jcharmer.github.io/homepage/
+astro.config.mjs             site=https://jcharmer.github.io (User Pages, root)
 .github/workflows/deploy.yml GitHub Pages deploy (Astro action)
 ```
 
@@ -30,20 +30,19 @@ chrome between them.
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/homepage/
+npm run dev      # http://localhost:4321/
 npm run build    # writes dist/
 npm run preview  # serve dist/
 ```
 
 ## Deploy on GitHub Pages
 
-The workflow at `.github/workflows/deploy.yml` builds and deploys on every
-push to `main`. To turn it on:
+This is a User Pages repo (`jcharmer/jcharmer.github.io`), so the site
+publishes at the root: `https://jcharmer.github.io/`.
 
-1. Merge this branch to `main`.
-2. Repo Settings → Pages → Source: **GitHub Actions** (not "Deploy from a branch").
-3. Push to `main`. The workflow runs and publishes
-   `https://jcharmer.github.io/homepage/`.
+The workflow at `.github/workflows/deploy.yml` builds and deploys on every
+push to `main`. Make sure Repo Settings → Pages → Source is set to
+**GitHub Actions** (not "Deploy from a branch").
 
 Custom domain (later): add a `CNAME` file at repo root with the domain, set
 the DNS records GitHub shows you, and update `site` in `astro.config.mjs`.
@@ -60,5 +59,4 @@ the DNS records GitHub shows you, and update `site` in `astro.config.mjs`.
 
 ## Branch
 
-Working branch: `claude/review-repo-info-EH95P`. The repo has no `main`
-branch yet — first push of this branch (or a merge) creates it.
+Default branch: `main`. Feature work happens on `claude/*` branches.
