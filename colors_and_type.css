@@ -1,0 +1,274 @@
+/* ============================================================
+   CrewDriver · colors_and_type.css
+   Canonical design tokens + semantic styles.
+   Source: marketing site build/, Confluence brand guide,
+   Canva brand kit kADdX6MP9Ng.
+   ============================================================ */
+
+/* ── Fonts ─────────────────────────────────────────────── */
+@font-face {
+  font-family: 'ChunkFive';
+  src: url('fonts/ChunkFive-Regular.woff2') format('woff2'),
+       url('fonts/ChunkFive-Regular.woff')  format('woff'),
+       url('fonts/ChunkFive-Regular.ttf')   format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Roboto (body) is loaded via Google Fonts on pages that use it:
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"> */
+
+:root {
+
+  /* ── Brand palette ──────────────────────────────────── */
+  --cd-green:          #5CB85C;  /* Primary (Fern) — CTAs, stat numbers, wordmark accent */
+  --cd-green-hover:    #4da84d;  /* CTA hover */
+  --cd-dark-green:     #276B57;  /* Secondary (Casal) — contrast panels, final CTA bg */
+  --cd-highlight:      #96d9c6;  /* App UI accent / trust line on dark green */
+
+  /* ── Neutrals ───────────────────────────────────────── */
+  --cd-black:          #0d0d0d;  /* Deepest — footer, darkest sections */
+  --cd-near-black:     #141414;  /* Default dark bg */
+  --cd-charcoal:       #1c1c1c;  /* Card bg on dark sections */
+  --cd-mid:            #2a2a2a;  /* Inbound SMS bubbles, subtle fills */
+  --cd-body-dark:      #363636;  /* Body text on light backgrounds */
+  --cd-smoke:          #F5F5F5;  /* Off-white bg */
+  --cd-white:          #FFFFFF;
+
+  /* ── Foreground tokens (on dark bg — primary context) ──
+     The brand is dark-dominant; these set the rhythm of text weight. */
+  --cd-fg-1:           rgba(255,255,255,0.95);  /* Headings */
+  --cd-fg-2:           rgba(255,255,255,0.72);  /* Subheads, intro copy */
+  --cd-fg-3:           rgba(255,255,255,0.55);  /* Body */
+  --cd-fg-4:           rgba(255,255,255,0.38);  /* Attribution, fine print */
+  --cd-fg-5:           rgba(255,255,255,0.28);  /* Eyebrow labels, muted rules */
+  --cd-fg-muted:       rgba(255,255,255,0.18);  /* Footer copy */
+
+  /* On-light equivalents */
+  --cd-ink-1:          #141414;
+  --cd-ink-2:          #363636;
+  --cd-ink-3:          #6b6b6b;
+  --cd-ink-4:          #999999;
+
+  /* ── Semantic status ────────────────────────────────── */
+  --cd-success:        #5CB85C;   /* = green */
+  --cd-confirm:        rgba(92,184,92,0.9);
+  --cd-missed:         rgba(255,100,100,0.65);
+  --cd-calling:        rgba(255,180,50,0.85);
+  --cd-waiting:        rgba(255,255,255,0.28);
+  --cd-danger-ink:     rgba(255,100,100,0.65);
+
+  /* ── Divider / hairline ─────────────────────────────── */
+  --cd-rule:           rgba(255,255,255,0.07);
+  --cd-rule-stronger:  rgba(255,255,255,0.12);
+  --cd-accent-rule:    rgba(92,184,92,0.5);
+
+  /* ── Type families ──────────────────────────────────── */
+  --cd-font-display:   'ChunkFive', 'Rubik One', 'Arial Black', sans-serif;
+  --cd-font-body:      'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --cd-font-mono:      'Courier New', Courier, monospace;
+
+  /* ── Type scale (desktop) ───────────────────────────── */
+  --cd-size-hero:       80px;   /* .cd-h1 — hero headline */
+  --cd-size-display:    60px;   /* .cd-h2 — section headlines (final CTA) */
+  --cd-size-section:    52px;   /* section headline standard */
+  --cd-size-h3:         36px;
+  --cd-size-h4:         26px;   /* persona names, stat 2 */
+  --cd-size-stat:       56px;
+  --cd-size-lead:       19px;   /* hero sub */
+  --cd-size-body:       16px;
+  --cd-size-small:      14px;
+  --cd-size-caption:    13px;
+  --cd-size-eyebrow:    11px;
+
+  --cd-leading-display: 0.98;
+  --cd-leading-tight:   1.1;
+  --cd-leading-body:    1.65;
+  --cd-leading-loose:   1.8;
+
+  --cd-track-eyebrow:   2.5px;
+  --cd-track-caps:      1px;
+  --cd-track-tight:     0.5px;
+
+  /* ── Spacing ────────────────────────────────────────── */
+  --cd-space-1:   4px;
+  --cd-space-2:   8px;
+  --cd-space-3:   12px;
+  --cd-space-4:   16px;
+  --cd-space-5:   24px;
+  --cd-space-6:   32px;
+  --cd-space-7:   48px;
+  --cd-space-8:   64px;
+  --cd-space-9:   96px;     /* section gap desktop */
+  --cd-space-10:  128px;
+
+  --cd-gap-page:     60px;  /* page horizontal padding */
+  --cd-gap-section:  96px;  /* vertical section padding */
+  --cd-content-max:  1200px;
+
+  /* ── Radii (minimal by design) ──────────────────────── */
+  --cd-radius-0:  0;         /* default — most surfaces have square corners */
+  --cd-radius-sm: 2px;       /* promo badges */
+  --cd-radius-md: 16px;      /* SMS bubbles */
+  --cd-radius-lg: 38px;      /* phone chassis */
+
+  /* ── Elevation / shadow ─────────────────────────────── */
+  --cd-shadow-none:  none;
+  --cd-shadow-card:  0 2px 12px rgba(0,0,0,0.25);
+  --cd-shadow-lift:  0 8px 32px rgba(0,0,0,0.45);
+  --cd-shadow-phone: 0 40px 80px rgba(0,0,0,0.65);
+
+  /* ── Motion ─────────────────────────────────────────── */
+  --cd-ease:            cubic-bezier(.4,0,.2,1);
+  --cd-duration-fast:   100ms;
+  --cd-duration-base:   180ms;
+  --cd-duration-slow:   220ms;
+}
+
+
+/* ============================================================
+   Semantic element styles
+   Apply to actual tags OR use the .cd-* classes.
+   ============================================================ */
+
+.cd-reset body,
+.cd-body {
+  font-family: var(--cd-font-body);
+  font-size: var(--cd-size-body);
+  line-height: var(--cd-leading-body);
+  color: var(--cd-fg-2);
+  background: var(--cd-near-black);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display ---------------------------------------------------- */
+.cd-h1,
+.cd-hero-headline {
+  font-family: var(--cd-font-display);
+  font-weight: 400;
+  font-size: var(--cd-size-hero);
+  line-height: var(--cd-leading-display);
+  letter-spacing: var(--cd-track-caps);
+  text-transform: uppercase;
+  color: var(--cd-fg-1);
+}
+
+.cd-h2,
+.cd-section-headline {
+  font-family: var(--cd-font-display);
+  font-weight: 400;
+  font-size: var(--cd-size-section);
+  line-height: 1.0;
+  letter-spacing: var(--cd-track-tight);
+  text-transform: uppercase;
+  color: var(--cd-fg-1);
+}
+
+.cd-h3 {
+  font-family: var(--cd-font-display);
+  font-weight: 400;
+  font-size: var(--cd-size-h3);
+  line-height: var(--cd-leading-tight);
+  letter-spacing: var(--cd-track-tight);
+  text-transform: uppercase;
+  color: var(--cd-fg-1);
+}
+
+.cd-h4 {
+  font-family: var(--cd-font-display);
+  font-weight: 400;
+  font-size: var(--cd-size-h4);
+  line-height: var(--cd-leading-tight);
+  letter-spacing: var(--cd-track-tight);
+  text-transform: uppercase;
+  color: var(--cd-fg-1);
+}
+
+.cd-stat-number {
+  font-family: var(--cd-font-display);
+  font-weight: 400;
+  font-size: var(--cd-size-stat);
+  line-height: 1;
+  letter-spacing: var(--cd-track-caps);
+  color: var(--cd-green);
+}
+
+/* Body ------------------------------------------------------- */
+.cd-lead {
+  font-family: var(--cd-font-body);
+  font-size: var(--cd-size-lead);
+  line-height: var(--cd-leading-body);
+  color: var(--cd-fg-2);
+  font-weight: 400;
+}
+
+.cd-p {
+  font-family: var(--cd-font-body);
+  font-size: var(--cd-size-body);
+  line-height: var(--cd-leading-loose);
+  color: var(--cd-fg-3);
+}
+
+.cd-small {
+  font-size: var(--cd-size-small);
+  color: var(--cd-fg-3);
+  line-height: var(--cd-leading-body);
+}
+
+.cd-caption {
+  font-size: var(--cd-size-caption);
+  color: var(--cd-fg-4);
+}
+
+/* Eyebrow / label ------------------------------------------- */
+.cd-eyebrow {
+  font-family: var(--cd-font-body);
+  font-size: var(--cd-size-eyebrow);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--cd-track-eyebrow);
+  color: var(--cd-green);
+}
+
+.cd-label {
+  font-family: var(--cd-font-body);
+  font-size: var(--cd-size-eyebrow);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--cd-fg-5);
+}
+
+/* Quote ------------------------------------------------------ */
+.cd-quote {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  line-height: var(--cd-leading-body);
+  color: var(--cd-fg-2);
+  font-style: italic;
+}
+
+.cd-attribution {
+  font-size: var(--cd-size-caption);
+  color: var(--cd-fg-4);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  font-style: normal;
+}
+
+/* Mono / dispatch log --------------------------------------- */
+.cd-mono {
+  font-family: var(--cd-font-mono);
+  font-size: 12px;
+  color: var(--cd-fg-3);
+}
+
+/* Accent rule (short green underline) */
+.cd-accent-rule {
+  width: 40px;
+  height: 2px;
+  background: var(--cd-accent-rule);
+  margin: 0 0 28px;
+}

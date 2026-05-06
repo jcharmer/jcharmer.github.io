@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrewDriver — Which One Are You?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'Chunk Five';
+  src: url('../fonts/ChunkFive-Regular.woff2') format('woff2'),
+       url('../fonts/ChunkFive-Regular.woff') format('woff'),
+       url('../fonts/ChunkFive-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #0d0d0d;
+  --near-black: #141414;
+  --charcoal: #1c1c1c;
+  --charcoal-mid: #242424;
+  --green: #5CB85C;
+  --dark-green: #276B57;
+  --white: #ffffff;
+  --font-display: 'Chunk Five', 'Rubik One', 'Arial Narrow', sans-serif;
+  --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--near-black); color: var(--white); font-family: var(--font-body); line-height: 1.6; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 64px;
+  background: rgba(13,13,13,0.95); border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+}
+.nav__wordmark { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--white); text-decoration: none; }
+.nav__links { display: flex; gap: 32px; align-items: center; }
+.nav__links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+.nav__links a:hover { color: var(--white); }
+.btn--nav { background: var(--green); color: var(--white) !important; padding: 8px 20px; border-radius: 4px; font-weight: 700 !important; font-size: 13px !important; }
+
+/* HERO */
+.hero {
+  padding: 140px 48px 100px;
+  text-align: center;
+  background: var(--near-black);
+}
+.hero__eyebrow {
+  display: inline-block; margin-bottom: 24px;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--green);
+}
+.hero__headline {
+  font-family: var(--font-display); font-size: clamp(36px, 5.5vw, 72px); line-height: 1.05;
+  color: var(--white); max-width: 700px; margin: 0 auto 20px;
+}
+.hero__sub {
+  font-size: 18px; color: rgba(255,255,255,0.55); max-width: 520px; margin: 0 auto;
+}
+
+/* PERSONA SELECTOR — the centrepiece */
+.persona-section {
+  background: var(--charcoal); padding: 100px 48px;
+}
+.persona-section__header { text-align: center; margin-bottom: 64px; }
+.persona-section__header h2 {
+  font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); color: var(--white); margin-bottom: 12px;
+}
+.persona-section__header p { font-size: 16px; color: rgba(255,255,255,0.5); }
+
+.persona-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  max-width: 1200px; margin: 0 auto;
+}
+.persona-card {
+  background: var(--near-black); padding: 48px 40px;
+  position: relative; overflow: hidden;
+  cursor: pointer; transition: background 0.3s;
+}
+.persona-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--card-color, var(--green));
+}
+.persona-card:hover { background: var(--charcoal-mid); }
+.persona-card--lucy { --card-color: #5CB85C; }
+.persona-card--pam { --card-color: #276B57; }
+.persona-card--tina { --card-color: #3a7bd5; }
+
+.persona-card__role {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--card-color, var(--green)); margin-bottom: 20px;
+}
+.persona-card__name {
+  font-family: var(--font-display); font-size: 32px; color: var(--white); margin-bottom: 8px;
+}
+.persona-card__title {
+  font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 32px;
+}
+.persona-card__problem {
+  background: rgba(255,255,255,0.04); border-left: 3px solid var(--card-color, var(--green));
+  padding: 16px 20px; border-radius: 0 4px 4px 0; margin-bottom: 28px;
+  font-size: 15px; color: rgba(255,255,255,0.7); font-style: italic; line-height: 1.6;
+}
+.persona-card__bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.persona-card__bullets li {
+  font-size: 14px; color: rgba(255,255,255,0.6); padding-left: 20px; position: relative;
+}
+.persona-card__bullets li::before {
+  content: '→'; position: absolute; left: 0; color: var(--card-color, var(--green));
+}
+.persona-card__cta {
+  display: block; width: 100%; padding: 14px; text-align: center;
+  background: var(--card-color, var(--green)); color: var(--white); border-radius: 4px;
+  text-decoration: none; font-weight: 700; font-size: 14px;
+  transition: opacity 0.2s;
+}
+.persona-card--pam .persona-card__cta { background: var(--dark-green); }
+.persona-card--tina .persona-card__cta { background: #3a7bd5; }
+.persona-card__cta:hover { opacity: 0.85; }
+
+/* SHARED PROOF */
+.shared-proof {
+  background: var(--near-black); padding: 80px 48px; text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.shared-proof p { font-size: 14px; color: rgba(255,255,255,0.3); margin-bottom: 32px; letter-spacing: 1px; text-transform: uppercase; }
+.proof-nums {
+  display: flex; gap: 64px; justify-content: center; flex-wrap: wrap;
+}
+.proof-num .num { font-family: var(--font-display); font-size: 48px; color: var(--green); }
+.proof-num .label { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+/* EVERYONE GETS SMS */
+.sms-section {
+  background: var(--dark-green); padding: 100px 48px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  max-width: none;
+}
+.sms-section__text h2 {
+  font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 44px); color: var(--white); margin-bottom: 16px;
+}
+.sms-section__text p { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 420px; line-height: 1.8; margin-bottom: 32px; }
+.sms-section__text a { color: var(--white); font-weight: 700; font-size: 15px; text-decoration: underline; }
+
+.sms-phone {
+  background: rgba(0,0,0,0.3); border-radius: 16px; padding: 32px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.sms-bubble {
+  background: rgba(255,255,255,0.12); border-radius: 12px 12px 12px 4px;
+  padding: 14px 18px; font-size: 14px; color: rgba(255,255,255,0.85);
+  max-width: 85%; line-height: 1.5;
+}
+.sms-bubble--reply {
+  background: var(--green); border-radius: 12px 12px 4px 12px;
+  align-self: flex-end; color: var(--white); font-weight: 700;
+}
+.sms-time { font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; }
+
+/* CTA SECTION */
+.cta-section {
+  background: var(--charcoal); padding: 100px 48px; text-align: center;
+}
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); color: var(--white); margin-bottom: 20px; }
+.cta-section p { font-size: 18px; color: rgba(255,255,255,0.55); max-width: 500px; margin: 0 auto 40px; }
+.cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn--primary { background: var(--green); color: var(--white); padding: 16px 36px; border-radius: 4px; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-block; }
+.btn--outline { border: 1px solid rgba(255,255,255,0.25); color: var(--white); padding: 16px 36px; border-radius: 4px; font-weight: 500; font-size: 15px; text-decoration: none; display: inline-block; }
+.btn--text-link { font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 16px 0; }
+
+/* FOOTER */
+footer { background: var(--black); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); }
+.footer__mark { font-family: var(--font-display); font-size: 18px; color: rgba(255,255,255,0.3); }
+.footer__copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .persona-grid { grid-template-columns: 1fr; gap: 2px; }
+  .sms-section { grid-template-columns: 1fr; padding: 60px 24px; }
+  .nav { padding: 0 24px; }
+  .hero, .persona-section, .shared-proof, .cta-section { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 600px) {
+  .nav__links { display: none; }
+  .hero { padding: 120px 24px 60px; }
+  .proof-nums { gap: 32px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" aria-label="Site navigation">
+    <a href="/" class="nav__wordmark">CrewDriver</a>
+    <div class="nav__links">
+      <a href="/pricing.html">Pricing</a>
+      <a href="#video">Watch Demo</a>
+      <a href="#" class="btn--nav">Start Free Trial</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <p class="hero__eyebrow">Dispatch Automation — AV &amp; Live Events</p>
+    <h1 class="hero__headline" id="hero-headline">Built for the people who actually run the crew.</h1>
+    <p class="hero__sub">Tell us who you are and we'll show you exactly what CrewDriver does for you.</p>
+  </section>
+
+  <!-- PERSONA SELECTOR -->
+  <section class="persona-section" aria-labelledby="persona-heading">
+    <div class="persona-section__header">
+      <h2 id="persona-heading">Which one are you?</h2>
+      <p>Three different roles. One platform. Each with what they actually care about.</p>
+    </div>
+
+    <div class="persona-grid" role="list">
+
+      <!-- LUCY -->
+      <div class="persona-card persona-card--lucy" role="listitem">
+        <p class="persona-card__role">Labour Coordinator</p>
+        <h3 class="persona-card__name">Lucy</h3>
+        <p class="persona-card__title">You do the dispatching. You own the roster.</p>
+        <div class="persona-card__problem">"I'm scared this will replace me. And I'm also drowning in texts."</div>
+        <ul class="persona-card__bullets" aria-label="How CrewDriver helps Lucy">
+          <li>You stay in control — CrewDriver handles the offers, you handle exceptions</li>
+          <li>Your crew relationships improve because you're not burning them with 11pm texts</li>
+          <li>Seniority and availability rules are enforced automatically</li>
+          <li>You get the same confirmation you'd get manually — faster</li>
+        </ul>
+        <a href="#" class="persona-card__cta" aria-label="Learn how CrewDriver works for Labour Coordinators">See Lucy's story →</a>
+      </div>
+
+      <!-- PAM -->
+      <div class="persona-card persona-card--pam" role="listitem">
+        <p class="persona-card__role">Production Manager</p>
+        <h3 class="persona-card__name">Pam</h3>
+        <p class="persona-card__title">You need shifts covered. You can't babysit the process.</p>
+        <div class="persona-card__problem">"I just need to know the crew is confirmed. Everything else is noise."</div>
+        <ul class="persona-card__bullets" aria-label="How CrewDriver helps Pam">
+          <li>Shift coverage visibility without chasing coordinators for updates</li>
+          <li>No drama — workers confirm themselves, no forced placements</li>
+          <li>Works alongside Flex scheduling if that's what you're already on</li>
+          <li>Fewer last-minute scrambles. Fewer no-shows on the floor.</li>
+        </ul>
+        <a href="#" class="persona-card__cta" aria-label="Learn how CrewDriver works for Production Managers">See Pam's story →</a>
+      </div>
+
+      <!-- TINA -->
+      <div class="persona-card persona-card--tina" role="listitem">
+        <p class="persona-card__role">Business Owner</p>
+        <h3 class="persona-card__name">Tina</h3>
+        <p class="persona-card__title">You run the company. You wear seven hats. You're skeptical.</p>
+        <div class="persona-card__problem">"I've tried every scheduling tool. None of them fit how AV actually works."</div>
+        <ul class="persona-card__bullets" aria-label="How CrewDriver helps Tina">
+          <li>$3 per confirmed placement — pay only when someone actually shows up confirmed</li>
+          <li>No per-seat pricing, no worker licenses, no app adoption problem</li>
+          <li>SMS-only means zero crew training and near-100% response rates</li>
+          <li>Start free. See it work before you commit to anything.</li>
+        </ul>
+        <a href="#" class="persona-card__cta" aria-label="Learn how CrewDriver works for Business Owners">See Tina's story →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SHARED PROOF -->
+  <section class="shared-proof" aria-label="Proof metrics">
+    <p>Across every role, the numbers are the same</p>
+    <div class="proof-nums" role="list">
+      <div class="proof-num" role="listitem">
+        <div class="num">2.2M</div>
+        <div class="label">texts sent</div>
+      </div>
+      <div class="proof-num" role="listitem">
+        <div class="num">150k+</div>
+        <div class="label">confirmed placements</div>
+      </div>
+      <div class="proof-num" role="listitem">
+        <div class="num">1.1</div>
+        <div class="label">avg. offers per shift</div>
+      </div>
+      <div class="proof-num" role="listitem">
+        <div class="num">5+</div>
+        <div class="label">years at Rogers Arena</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW SMS WORKS -->
+  <section class="sms-section" aria-labelledby="sms-heading">
+    <div class="sms-section__text">
+      <h2 id="sms-heading">No apps. No portals. Just a text.</h2>
+      <p>Your crew gets an SMS offer. They reply YES or NO. If they decline, the next person on your list gets the offer automatically. You get a confirmation when the shift is filled.</p>
+      <p>Workers don't need accounts. Coordinators don't need to chase anyone. The system does the cascading — you do the exceptions.</p>
+      <a href="#video">Watch how it works in 2 minutes →</a>
+    </div>
+    <div class="sms-phone" role="img" aria-label="Example SMS dispatch exchange">
+      <div class="sms-time">Saturday, Apr 19 · 9:14 AM</div>
+      <div class="sms-bubble">CREWDRIVER: Shift Sat Apr 19, 8am–4pm, Rogers Arena, Rigging. Confirm? Reply YES or NO.</div>
+      <div class="sms-bubble sms-bubble--reply">YES</div>
+      <div class="sms-bubble">Confirmed ✓ You're booked for Rogers Arena Sat Apr 19, 8am. Details to follow.</div>
+      <div class="sms-time">Coordinator notified · Shift: 1 of 4 filled</div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">Ready to see it for yourself?</h2>
+    <p>Free trial. No credit card. Your first 30 days are on us — and your crew won't know the difference.</p>
+    <div class="cta-group">
+      <a href="#" class="btn--primary">Start Free Trial</a>
+      <a href="#" class="btn--outline">Schedule a Call</a>
+      <a href="#video" class="btn--text-link">▶ Watch the Demo</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span class="footer__mark">CrewDriver</span>
+  <span class="footer__copy">© 2026 CrewDriver. Built for the crew.</span>
+</footer>
+
+</body>
+</html>

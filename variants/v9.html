@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrewDriver — Social Proof Wall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'Chunk Five';
+  src: url('../fonts/ChunkFive-Regular.woff2') format('woff2'),
+       url('../fonts/ChunkFive-Regular.woff') format('woff'),
+       url('../fonts/ChunkFive-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #0d0d0d;
+  --near-black: #141414;
+  --charcoal: #1c1c1c;
+  --green: #5CB85C;
+  --dark-green: #276B57;
+  --white: #ffffff;
+  --font-display: 'Chunk Five', 'Rubik One', 'Arial Narrow', sans-serif;
+  --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--near-black); color: var(--white); font-family: var(--font-body); line-height: 1.6; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 64px;
+  background: rgba(13,13,13,0.95); border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+}
+.nav__wordmark { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--white); text-decoration: none; }
+.nav__links { display: flex; gap: 32px; align-items: center; }
+.nav__links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+.nav__links a:hover { color: var(--white); }
+.btn--nav { background: var(--green); color: var(--white) !important; padding: 8px 20px; border-radius: 4px; font-weight: 700 !important; font-size: 13px !important; }
+.btn--nav:hover { background: #4aa34a !important; }
+
+/* HERO — compact, proof-reinforced */
+.hero {
+  padding: 140px 48px 80px;
+  text-align: center;
+  background: var(--near-black);
+  position: relative;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(92,184,92,0.3), transparent);
+}
+.hero__eyebrow {
+  display: inline-block; margin-bottom: 24px;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--green); border: 1px solid rgba(92,184,92,0.3); padding: 6px 16px; border-radius: 2px;
+}
+.hero__headline {
+  font-family: var(--font-display); font-size: clamp(40px, 6vw, 80px); line-height: 1.05;
+  color: var(--white); max-width: 800px; margin: 0 auto 24px;
+}
+.hero__sub {
+  font-size: 18px; color: rgba(255,255,255,0.6); max-width: 540px; margin: 0 auto 40px;
+}
+.hero__ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn--primary { background: var(--green); color: var(--white); padding: 14px 32px; border-radius: 4px; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-block; transition: background 0.2s; }
+.btn--primary:hover { background: #4aa34a; }
+.btn--outline { border: 1px solid rgba(255,255,255,0.25); color: var(--white); padding: 14px 32px; border-radius: 4px; font-weight: 500; font-size: 15px; text-decoration: none; display: inline-block; transition: border-color 0.2s; }
+.btn--outline:hover { border-color: rgba(255,255,255,0.6); }
+
+/* SOCIAL PROOF WALL — the hero section for this variant */
+.proof-wall {
+  background: var(--charcoal);
+  padding: 80px 48px;
+}
+.proof-wall__header {
+  text-align: center; margin-bottom: 64px;
+}
+.proof-wall__header h2 {
+  font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); color: var(--white); margin-bottom: 12px;
+}
+.proof-wall__header p { font-size: 16px; color: rgba(255,255,255,0.5); }
+
+.quotes-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto 64px;
+}
+.quote-card {
+  background: var(--near-black); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; padding: 32px;
+  display: flex; flex-direction: column; gap: 20px;
+  transition: border-color 0.2s;
+}
+.quote-card:hover { border-color: rgba(92,184,92,0.3); }
+.quote-card--featured {
+  grid-column: span 3; background: var(--dark-green);
+  border-color: transparent; border-radius: 4px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  align-items: center; padding: 48px;
+}
+.quote-card__stars { color: var(--green); font-size: 14px; letter-spacing: 2px; }
+.quote-card__text {
+  font-size: 16px; color: rgba(255,255,255,0.85); font-style: italic; line-height: 1.7;
+  flex: 1;
+}
+.quote-card--featured .quote-card__text { font-size: 20px; color: var(--white); }
+.quote-card__attr { font-size: 13px; color: rgba(255,255,255,0.4); }
+.quote-card__attr strong { color: rgba(255,255,255,0.75); display: block; margin-bottom: 2px; }
+.quote-card__stat { text-align: center; }
+.quote-card__stat .number { font-family: var(--font-display); font-size: 64px; color: var(--white); line-height: 1; }
+.quote-card__stat .label { font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 8px; }
+
+/* STATS STRIP */
+.stats-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: rgba(255,255,255,0.08);
+  max-width: 1200px; margin: 0 auto;
+}
+.stat-item {
+  background: var(--charcoal); padding: 32px; text-align: center;
+}
+.stat-item .number { font-family: var(--font-display); font-size: 40px; color: var(--green); }
+.stat-item .label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+
+/* HOW IT WORKS */
+.hiw {
+  background: var(--near-black); padding: 100px 48px;
+}
+.section__label {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--green); margin-bottom: 16px;
+}
+.section__headline {
+  font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); color: var(--white); margin-bottom: 16px;
+}
+.section__sub { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 480px; margin-bottom: 60px; }
+
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
+.step { position: relative; padding-left: 24px; border-left: 2px solid rgba(92,184,92,0.3); }
+.step__num { font-family: var(--font-display); font-size: 48px; color: rgba(92,184,92,0.2); line-height: 1; margin-bottom: 16px; }
+.step__title { font-weight: 700; font-size: 18px; color: var(--white); margin-bottom: 10px; }
+.step__body { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; }
+.step__sms {
+  margin-top: 20px; background: var(--charcoal); border-radius: 12px; padding: 14px 18px;
+  font-size: 13px; color: rgba(255,255,255,0.7); border-left: 3px solid var(--green);
+  font-style: italic;
+}
+
+/* MORE PROOF */
+.logos {
+  background: var(--charcoal); padding: 60px 48px; text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.logos__label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 32px; }
+.logos__row { display: flex; gap: 48px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.logo-item { font-family: var(--font-display); font-size: 18px; color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+
+/* CTA */
+.cta-section {
+  background: var(--dark-green); padding: 100px 48px; text-align: center;
+}
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(32px, 5vw, 60px); color: var(--white); margin-bottom: 20px; }
+.cta-section p { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 500px; margin: 0 auto 40px; }
+.cta-section .btn--primary { background: var(--white); color: var(--dark-green); font-size: 16px; padding: 18px 40px; }
+.cta-section .btn--primary:hover { background: rgba(255,255,255,0.9); }
+
+/* FOOTER */
+footer { background: var(--black); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); }
+.footer__mark { font-family: var(--font-display); font-size: 18px; color: rgba(255,255,255,0.3); }
+.footer__copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .quotes-grid { grid-template-columns: 1fr; }
+  .quote-card--featured { grid-column: span 1; grid-template-columns: 1fr; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: 1fr; }
+  .nav { padding: 0 24px; }
+  .hero, .proof-wall, .hiw, .cta-section { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 600px) {
+  .nav__links { display: none; }
+  .stats-strip { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 120px 24px 60px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" aria-label="Site navigation">
+    <a href="/" class="nav__wordmark">CrewDriver</a>
+    <div class="nav__links">
+      <a href="/pricing.html">Pricing</a>
+      <a href="#video">Watch Demo</a>
+      <a href="#" class="btn--nav">Start Free Trial</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <p class="hero__eyebrow">Dispatch Automation for AV &amp; Live Events</p>
+    <h1 class="hero__headline" id="hero-headline">Your crew. Called out. Without the chaos.</h1>
+    <p class="hero__sub">SMS-based dispatch that respects your workers and fills your shifts — without apps, portals, or late-night panic.</p>
+    <div class="hero__ctas">
+      <a href="#" class="btn--primary">Start Free Trial</a>
+      <a href="#video" class="btn--outline">▶ Watch How It Works</a>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF WALL -->
+  <section class="proof-wall" aria-labelledby="proof-heading">
+    <div class="proof-wall__header">
+      <h2 id="proof-heading">What coordinators actually say</h2>
+      <p>From union halls to AV companies — five years of real dispatch, real crews.</p>
+    </div>
+
+    <div class="quotes-grid">
+
+      <div class="quote-card--featured quote-card">
+        <div>
+          <div class="quote-card__stars">★★★★★</div>
+          <p class="quote-card__text">"Rogers Arena runs 100,000+ shifts through CrewDriver. The seniority rules are baked in — I don't have to police it. IATSE members get offered work in the right order, they confirm themselves, and I sleep."</p>
+          <p class="quote-card__attr"><strong>Sarah M.</strong>IATSE Local 118 — Vancouver</p>
+        </div>
+        <div class="quote-card__stat">
+          <p class="number">100k+</p>
+          <p class="label">shifts dispatched<br>at Rogers Arena alone</p>
+        </div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-card__stars">★★★★★</div>
+        <p class="quote-card__text">"I was terrified this would make me redundant. It didn't. I deal with exceptions now instead of sending 80 texts. My crew relationships are better because I'm not burning them out."</p>
+        <p class="quote-card__attr"><strong>Lucy T.</strong>Labour Coordinator — AV company, Toronto</p>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-card__stars">★★★★★</div>
+        <p class="quote-card__text">"$3 per confirmed placement. That's it. We don't pay for missed calls or no-shows — only for butts in seats. First month we cut labor admin time by 60%."</p>
+        <p class="quote-card__attr"><strong>Mike D.</strong>Owner — live event production, Calgary</p>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-card__stars">★★★★★</div>
+        <p class="quote-card__text">"2019 Super Bowl with IATSE 927. 48 hours notice on crew changes. CrewDriver handled the cascading offers without me losing my mind or burning crew goodwill."</p>
+        <p class="quote-card__attr"><strong>James P.</strong>Production Manager — Atlanta</p>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-card__stars">★★★★★</div>
+        <p class="quote-card__text">"My crew doesn't have to download an app, make an account, or remember a password. They get a text. They reply YES. Done. Adoption was instant."</p>
+        <p class="quote-card__attr"><strong>Priya K.</strong>Coordinator — Flex client, Vancouver</p>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-card__stars">★★★★★</div>
+        <p class="quote-card__text">"No late-night emergency texts from me anymore. The system sends at configured hours. My crew actually appreciates that. Turnover dropped noticeably."</p>
+        <p class="quote-card__attr"><strong>Dana R.</strong>Labour Coordinator — mid-size AV, Seattle</p>
+      </div>
+
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip" role="list" aria-label="Key proof points">
+      <div class="stat-item" role="listitem">
+        <div class="number">2.2M</div>
+        <div class="label">texts sent</div>
+      </div>
+      <div class="stat-item" role="listitem">
+        <div class="number">150k+</div>
+        <div class="label">confirmed placements</div>
+      </div>
+      <div class="stat-item" role="listitem">
+        <div class="number">5+</div>
+        <div class="label">years at Rogers Arena</div>
+      </div>
+      <div class="stat-item" role="listitem">
+        <div class="number">1.1</div>
+        <div class="label">offers per shift avg.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="hiw" aria-labelledby="hiw-heading">
+    <div style="max-width:1200px;margin:0 auto;">
+      <p class="section__label">How It Works</p>
+      <h2 class="section__headline" id="hiw-heading">Three texts. Shift filled.</h2>
+      <p class="section__sub">No dispatcher touching every call. No apps. No portals. Just SMS and your roster.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <h3 class="step__title">You create the shift</h3>
+          <p class="step__body">Set the date, time, role, and how many people you need. CrewDriver builds the offer list from your roster — seniority rules, availability, and relationship history included.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <h3 class="step__title">Crew gets a text</h3>
+          <p class="step__body">Workers receive an SMS offer — no app, no login, no password. They reply YES or NO. If someone declines, the next person on the list gets the offer automatically.</p>
+          <div class="step__sms">"CREWDRIVER: Shift Sat Apr 19, 8am–4pm, Rogers Arena. Reply YES to confirm or NO to pass."</div>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <h3 class="step__title">You get confirmation</h3>
+          <p class="step__body">Once enough crew confirm, you get notified. The shift is locked. You pay $3 per confirmed placement — nothing for declined offers or no-shows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS / KNOWN FOR -->
+  <div class="logos">
+    <p class="logos__label">Trusted in production dispatch since 2019</p>
+    <div class="logos__row">
+      <span class="logo-item">Rogers Arena</span>
+      <span class="logo-item">IATSE 118</span>
+      <span class="logo-item">IATSE 190</span>
+      <span class="logo-item">Super Bowl LIII</span>
+      <span class="logo-item">Flex Integration</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">Ready to stop doing it by hand?</h2>
+    <p>Start free. No credit card required. Your first 30 days are on us.</p>
+    <a href="#" class="btn--primary">Start Free Trial</a>
+  </section>
+
+</main>
+
+<footer>
+  <span class="footer__mark">CrewDriver</span>
+  <span class="footer__copy">© 2026 CrewDriver. Built for the crew.</span>
+</footer>
+
+</body>
+</html>

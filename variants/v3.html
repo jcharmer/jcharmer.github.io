@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrewDriver — Stop Doing It By Hand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'ChunkFive';
+      src: url('../fonts/ChunkFive-Regular.woff2') format('woff2'),
+           url('../fonts/ChunkFive-Regular.woff') format('woff'),
+           url('../fonts/ChunkFive-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --green: #5CB85C;
+      --dark-green: #276B57;
+      --near-black: #141414;
+      --black: #0d0d0d;
+      --charcoal: #1c1c1c;
+      --white: #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--near-black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--black);
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 64px;
+    }
+
+    .wordmark {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .wordmark span.green { color: var(--green); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--green);
+      color: var(--near-black) !important;
+      padding: 10px 22px;
+      border-radius: 3px;
+      font-weight: 700 !important;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: var(--black);
+      padding: 24px;
+      z-index: 99;
+      flex-direction: column;
+      gap: 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 8px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .mobile-menu .mobile-cta {
+      background: var(--green);
+      color: var(--near-black);
+      text-align: center;
+      padding: 14px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    /* PROBLEM HERO */
+    .hero-problem {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: 0;
+    }
+
+    .problem-top {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 100px 120px 80px;
+      border-bottom: 1px solid #222;
+    }
+
+    .problem-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 40px;
+    }
+
+    .problem-statement {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      line-height: 1.12;
+      color: var(--white);
+      max-width: 900px;
+    }
+
+    .problem-statement em {
+      font-style: normal;
+      color: #666;
+    }
+
+    /* Pain items ticker */
+    .pain-ticker {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid #1e1e1e;
+    }
+
+    .pain-item {
+      flex: 1;
+      padding: 28px 40px;
+      border-right: 1px solid #1e1e1e;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .pain-item:last-child { border-right: none; }
+
+    .pain-number {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.5rem;
+      color: #333;
+      flex-shrink: 0;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .pain-text {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #777;
+    }
+
+    /* PIVOT — THE SOLUTION */
+    .pivot-section {
+      background: var(--dark-green);
+      padding: 80px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .pivot-pre {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+
+    .pivot-headline {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      color: var(--white);
+      max-width: 720px;
+      margin-bottom: 32px;
+    }
+
+    .pivot-body {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .pivot-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-white {
+      background: var(--white);
+      color: var(--dark-green);
+      padding: 16px 36px;
+      border-radius: 3px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .btn-outline-white {
+      border: 1px solid rgba(255,255,255,0.35);
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 3px;
+      font-weight: 400;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    /* PROOF BAR */
+    .proof-bar {
+      background: var(--charcoal);
+      border-bottom: 1px solid #222;
+      padding: 48px 80px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .proof-stat { text-align: center; }
+
+    .proof-number {
+      font-family: 'ChunkFive', serif;
+      font-size: 2.6rem;
+      color: var(--green);
+      display: block;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .proof-label {
+      font-size: 0.72rem;
+      color: #666;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* HOW IT WORKS */
+    .hiw-section {
+      padding: 100px 120px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .section-headline {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      color: var(--white);
+      line-height: 1.1;
+      max-width: 600px;
+      margin-bottom: 64px;
+    }
+
+    .step-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid #222;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .step-item {
+      padding: 40px 32px;
+      border-right: 1px solid #222;
+      position: relative;
+    }
+
+    .step-item:last-child { border-right: none; }
+
+    .step-n {
+      font-family: 'ChunkFive', serif;
+      font-size: 2.5rem;
+      color: #2a2a2a;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .step-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .step-body {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: #888;
+    }
+
+    .step-accent {
+      width: 24px;
+      height: 3px;
+      background: var(--green);
+      margin-bottom: 24px;
+    }
+
+    /* PERSONA STRIPS */
+    .persona-section {
+      background: var(--black);
+      padding: 100px 120px;
+    }
+
+    .persona-strip {
+      display: grid;
+      grid-template-columns: 200px 1fr auto;
+      align-items: center;
+      gap: 48px;
+      padding: 40px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .persona-strip:first-of-type { border-top: 1px solid #1e1e1e; }
+
+    .persona-name-block {}
+
+    .persona-role {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+
+    .persona-name {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.8rem;
+      color: var(--white);
+    }
+
+    .persona-quote {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #999;
+      font-style: italic;
+    }
+
+    .persona-cta-link {
+      font-size: 0.82rem;
+      color: var(--green);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(92, 184, 92, 0.3);
+      padding-bottom: 2px;
+    }
+
+    /* FINAL CTA */
+    .cta-section {
+      padding: 100px 120px;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2.5rem, 4.5vw, 4rem);
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .cta-section p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #888;
+      max-width: 520px;
+      margin: 0 auto 48px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--near-black);
+      padding: 16px 36px;
+      border-radius: 3px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .btn-ghost {
+      border: 1px solid #333;
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 3px;
+      font-weight: 400;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #1a1a1a;
+      padding: 40px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: #555;
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: #3a3a3a;
+      width: 100%;
+      margin-top: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    @media (max-width: 900px) {
+      .problem-top { padding: 80px 40px 60px; }
+      .pain-ticker { flex-direction: column; }
+      .pain-item { border-right: none; border-bottom: 1px solid #1e1e1e; }
+      .pivot-section { padding: 64px 40px; }
+      .hiw-section { padding: 64px 40px; }
+      .step-list { grid-template-columns: 1fr 1fr; }
+      .persona-section { padding: 64px 40px; }
+      .persona-strip { grid-template-columns: 1fr; gap: 16px; }
+      .cta-section { padding: 80px 40px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .problem-top { padding: 60px 24px 48px; }
+      .pivot-section { padding: 48px 24px; }
+      .proof-bar { padding: 32px 24px; }
+      .hiw-section { padding: 56px 24px; }
+      .step-list { grid-template-columns: 1fr; }
+      .persona-section { padding: 56px 24px; }
+      .cta-section { padding: 64px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav role="navigation" aria-label="Main navigation">
+  <a href="/" class="wordmark">Crew<span class="green">Driver</span></a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="../pricing.html">Pricing</a></li>
+    <li><a href="#demo" class="nav-cta">Try the Demo</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Open menu" onclick="document.querySelector('.mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <a href="#how-it-works">How It Works</a>
+  <a href="../pricing.html">Pricing</a>
+  <a href="#demo" class="mobile-cta">Try the Demo</a>
+</div>
+
+<!-- PROBLEM HERO -->
+<section class="hero-problem" aria-label="Hero">
+  <div class="problem-top">
+    <p class="problem-label">For labour coordinators, production managers, and operators in live event production</p>
+    <h1 class="problem-statement">You're spending your Sunday calling 40 people one at a time.<br><em>There's a better way to run the call-out.</em></h1>
+  </div>
+  <div class="pain-ticker" aria-label="Common pain points">
+    <div class="pain-item">
+      <span class="pain-number">01</span>
+      <p class="pain-text">Midnight texts when you're scrambling to fill a Friday shift</p>
+    </div>
+    <div class="pain-item">
+      <span class="pain-number">02</span>
+      <p class="pain-text">No record of who was offered, who declined, who ghosted</p>
+    </div>
+    <div class="pain-item">
+      <span class="pain-number">03</span>
+      <p class="pain-text">One seniority mistake and there's a grievance filed by morning</p>
+    </div>
+    <div class="pain-item">
+      <span class="pain-number">04</span>
+      <p class="pain-text">Calling down a 40-person list for a shift that needs three people</p>
+    </div>
+  </div>
+</section>
+
+<!-- PIVOT — SOLUTION -->
+<section class="pivot-section" aria-label="Solution">
+  <p class="pivot-pre">The solution</p>
+  <h2 class="pivot-headline">We are call-out automation designed specifically for your production staff.</h2>
+  <p class="pivot-body">CrewDriver handles the dispatch by text message — not a blast to everyone, but one targeted offer at a time. Workers confirm themselves. You get a full audit trail. No app. No portal. No password.</p>
+  <div class="pivot-ctas">
+    <a href="#demo" class="btn-white">Try the Demo</a>
+    <a href="#" class="btn-outline-white">Watch the Video</a>
+    <a href="#" class="btn-outline-white">Schedule a Call</a>
+  </div>
+</section>
+
+<!-- PROOF -->
+<div class="proof-bar" aria-label="Key statistics">
+  <div class="proof-stat">
+    <span class="proof-number">2.2M</span>
+    <span class="proof-label">Texts Sent</span>
+  </div>
+  <div class="proof-stat">
+    <span class="proof-number">150K+</span>
+    <span class="proof-label">Successful Placements</span>
+  </div>
+  <div class="proof-stat">
+    <span class="proof-number">1.1</span>
+    <span class="proof-label">Offers Per Shift</span>
+  </div>
+  <div class="proof-stat">
+    <span class="proof-number">$3</span>
+    <span class="proof-label">Per Confirmed Placement</span>
+  </div>
+  <div class="proof-stat">
+    <span class="proof-number">5+ yrs</span>
+    <span class="proof-label">Rogers Arena</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="hiw-section" id="how-it-works" aria-label="How it works">
+  <p class="section-label">How it works</p>
+  <h2 class="section-headline">Four steps from shift creation to crew on site.</h2>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-accent" aria-hidden="true"></div>
+      <div class="step-n">01</div>
+      <h3 class="step-title">Create the shift</h3>
+      <p class="step-body">Set date, time, role, rate. CrewDriver already knows your roster and rules.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-accent" aria-hidden="true"></div>
+      <div class="step-n">02</div>
+      <h3 class="step-title">CrewDriver sends targeted offers</h3>
+      <p class="step-body">One worker at a time, in your priority order. No blast. No scramble.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-accent" aria-hidden="true"></div>
+      <div class="step-n">03</div>
+      <h3 class="step-title">Workers confirm by text</h3>
+      <p class="step-body">Reply YES or NO. Confirmed. Logged. The next offer goes out automatically.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-accent" aria-hidden="true"></div>
+      <div class="step-n">04</div>
+      <h3 class="step-title">You have a crew</h3>
+      <p class="step-body">Full roster confirmed. Full audit trail. No Sunday spent on the phone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAS -->
+<section class="persona-section" aria-label="Who CrewDriver is for">
+  <p class="section-label">Who it's for</p>
+  <h2 class="section-headline" style="font-family: 'ChunkFive', serif; font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--white); margin-bottom: 48px; line-height: 1.1;">Everyone in the chain who touches dispatch.</h2>
+
+  <div class="persona-strip">
+    <div class="persona-name-block">
+      <p class="persona-role">Labour Coordinator</p>
+      <h3 class="persona-name">Lucy</h3>
+    </div>
+    <p class="persona-quote">"I'm not being replaced — I'm being freed up to do the parts of this job that actually need me. CrewDriver handles the phone calls so I can handle the people."</p>
+    <a href="#demo" class="persona-cta-link">See how it works →</a>
+  </div>
+
+  <div class="persona-strip">
+    <div class="persona-name-block">
+      <p class="persona-role">Production Manager</p>
+      <h3 class="persona-name">Pam</h3>
+    </div>
+    <p class="persona-quote">"When someone questions why they weren't called, I open the log and show them exactly who was offered, when, and what they replied. It ends the conversation."</p>
+    <a href="#demo" class="persona-cta-link">See how it works →</a>
+  </div>
+
+  <div class="persona-strip">
+    <div class="persona-name-block">
+      <p class="persona-role">Owner / Operator</p>
+      <h3 class="persona-name">Tina</h3>
+    </div>
+    <p class="persona-quote">"I was skeptical of anything that automates my crew relationships. But my crew doesn't care who sends the text — they care that the text is right. CrewDriver is right."</p>
+    <a href="#demo" class="persona-cta-link">See how it works →</a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="demo" aria-label="Call to action">
+  <h2>Build relationships,<br>not spreadsheets.</h2>
+  <p>Try CrewDriver with your own roster. No commitment, no credit card. If it doesn't fit how you work, you'll know in 20 minutes.</p>
+  <div class="cta-row">
+    <a href="#" class="btn-primary">Try the Demo</a>
+    <a href="#" class="btn-ghost">Schedule a Call</a>
+    <a href="#" class="btn-ghost">Watch the Video</a>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="wordmark">Crew<span class="green">Driver</span></a>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 CrewDriver. Built for the crew.</p>
+</footer>
+
+</body>
+</html>

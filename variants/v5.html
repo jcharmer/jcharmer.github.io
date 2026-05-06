@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrewDriver — Call-Out Automation for Live Events</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'ChunkFive';
+      src: url('../fonts/ChunkFive-Regular.woff2') format('woff2'),
+           url('../fonts/ChunkFive-Regular.woff') format('woff'),
+           url('../fonts/ChunkFive-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --green: #5CB85C;
+      --dark-green: #276B57;
+      --near-black: #141414;
+      --black: #0d0d0d;
+      --charcoal: #1c1c1c;
+      --white: #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--near-black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 72px;
+    }
+
+    .wordmark {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      text-decoration: none;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    }
+
+    .wordmark span.green { color: var(--green); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--green);
+      color: var(--near-black) !important;
+      padding: 10px 22px;
+      border-radius: 3px;
+      font-weight: 700 !important;
+      text-shadow: none !important;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--black);
+      padding: 80px 24px 32px;
+      z-index: 99;
+      flex-direction: column;
+      gap: 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .mobile-menu a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 10px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .mobile-menu .mobile-cta {
+      background: var(--green);
+      color: var(--near-black);
+      text-align: center;
+      padding: 14px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    /* PHOTO HERO WITH PROOF STRIP */
+    .hero-photo {
+      position: relative;
+      height: 72vh;
+      min-height: 520px;
+      background: url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1920&q=80&auto=format&fit=crop') center center / cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(13, 13, 13, 0.55) 0%,
+        rgba(13, 13, 13, 0.2) 40%,
+        rgba(13, 13, 13, 0.7) 70%,
+        rgba(13, 13, 13, 0.92) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 80px 0;
+    }
+
+    .hero-content h1 {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      line-height: 1.1;
+      color: var(--white);
+      max-width: 720px;
+      margin-bottom: 16px;
+    }
+
+    .hero-content p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--near-black);
+      padding: 14px 32px;
+      border-radius: 3px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.4);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 3px;
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+
+    /* PROOF STRIP INSIDE HERO */
+    .proof-strip {
+      position: relative;
+      z-index: 2;
+      margin-top: 40px;
+      background: rgba(13, 13, 13, 0.85);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 24px 80px;
+      gap: 24px;
+    }
+
+    .proof-item {
+      text-align: center;
+    }
+
+    .proof-n {
+      font-family: 'ChunkFive', serif;
+      font-size: 2rem;
+      color: var(--green);
+      display: block;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .proof-l {
+      font-size: 0.7rem;
+      color: #777;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* PRODUCT — FAST */
+    .product-section {
+      padding: 80px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .section-headline {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      color: var(--white);
+      line-height: 1.1;
+      max-width: 600px;
+      margin-bottom: 56px;
+    }
+
+    .feature-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .feature-num {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.2rem;
+      color: #333;
+      padding-top: 2px;
+    }
+
+    .feature-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .feature-body {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #888;
+    }
+
+    /* SMS MOCKUP */
+    .sms-panel {
+      background: var(--charcoal);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .sms-panel-header {
+      background: #222;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #333;
+    }
+
+    .sms-panel-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .sms-panel-meta {
+      font-size: 0.7rem;
+      color: #555;
+    }
+
+    .sms-panel-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sms-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .sms-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #444;
+      min-width: 52px;
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .sms-msg {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      line-height: 1.5;
+      color: #ccc;
+    }
+
+    .sms-msg.confirm {
+      background: rgba(39, 107, 87, 0.15);
+      border-color: rgba(39, 107, 87, 0.3);
+      color: #9ecdb9;
+    }
+
+    .sms-msg.reply {
+      background: #1e2e28;
+      border-color: rgba(92, 184, 92, 0.2);
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .sms-panel-footer {
+      padding: 14px 20px;
+      border-top: 1px solid #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sms-status {
+      font-size: 0.7rem;
+      color: #444;
+    }
+
+    .sms-status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    /* SOCIAL PROOF ROW */
+    .logos-section {
+      background: var(--black);
+      border-top: 1px solid #1e1e1e;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 40px 80px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .logos-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    .logo-badge {
+      font-family: 'ChunkFive', serif;
+      font-size: 0.88rem;
+      color: #555;
+      letter-spacing: 0.05em;
+    }
+
+    .logo-badge span {
+      color: #333;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* WHO IT'S FOR */
+    .who-section {
+      padding: 80px;
+      background: var(--charcoal);
+    }
+
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .who-card {
+      background: var(--near-black);
+      border: 1px solid #222;
+      border-radius: 4px;
+      padding: 32px;
+    }
+
+    .who-role {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .who-name {
+      font-family: 'ChunkFive', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .who-body {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #888;
+    }
+
+    /* CTA */
+    .cta-section {
+      background: var(--dark-green);
+      padding: 80px;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'ChunkFive', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      color: rgba(255,255,255,0.65);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-white {
+      background: var(--white);
+      color: var(--dark-green);
+      padding: 16px 36px;
+      border-radius: 3px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn-ghost-white {
+      border: 1px solid rgba(255,255,255,0.35);
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 3px;
+      text-decoration: none;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #1a1a1a;
+      padding: 40px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: #555;
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: #3a3a3a;
+      width: 100%;
+      margin-top: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    @media (max-width: 900px) {
+      .feature-columns { grid-template-columns: 1fr; }
+      .who-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .hero-content { padding: 0 24px; }
+      .proof-strip { padding: 20px 24px; }
+      .product-section { padding: 56px 24px; }
+      .logos-section { padding: 32px 24px; }
+      .who-section { padding: 56px 24px; }
+      .cta-section { padding: 56px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav role="navigation" aria-label="Main navigation">
+  <a href="/" class="wordmark">Crew<span class="green">Driver</span></a>
+  <ul class="nav-links">
+    <li><a href="#product">How It Works</a></li>
+    <li><a href="../pricing.html">Pricing</a></li>
+    <li><a href="#demo" class="nav-cta">Try the Demo</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Open menu" onclick="document.querySelector('.mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')" aria-label="Close menu">✕</button>
+  <a href="#product">How It Works</a>
+  <a href="../pricing.html">Pricing</a>
+  <a href="#demo" class="mobile-cta">Try the Demo</a>
+</div>
+
+<!-- PHOTO HERO -->
+<section class="hero-photo" aria-label="Hero">
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-content">
+    <h1>No one understands the way you do things in production.</h1>
+    <p>CrewDriver is call-out automation built specifically for live event production — AV companies, IATSE halls, and the people who actually run dispatch.</p>
+    <div class="hero-ctas">
+      <a href="#demo" class="btn-primary">Try the Demo</a>
+      <a href="#" class="btn-ghost">Watch the Video</a>
+    </div>
+  </div>
+  <!-- PROOF STRIP INSIDE HERO -->
+  <div class="proof-strip" aria-label="Key statistics">
+    <div class="proof-item">
+      <span class="proof-n">2.2M</span>
+      <span class="proof-l">Texts Sent</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-n">150K+</span>
+      <span class="proof-l">Placements</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-n">1.1</span>
+      <span class="proof-l">Offers / Shift</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-n">$3</span>
+      <span class="proof-l">Per Placement</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-n">5+ yrs</span>
+      <span class="proof-l">Rogers Arena</span>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT LOGOS ROW -->
+<div class="logos-section" aria-label="Notable clients">
+  <span class="logos-label">Trusted by</span>
+  <div class="logo-badge">Rogers Arena<span>Vancouver — 100,000+ shifts</span></div>
+  <div class="logo-badge">IATSE 118<span>British Columbia</span></div>
+  <div class="logo-badge">IATSE 927<span>Atlanta — Superbowl 2019</span></div>
+  <div class="logo-badge">IATSE 190<span>Wichita, Kansas</span></div>
+</div>
+
+<!-- PRODUCT — FAST -->
+<section class="product-section" id="product" aria-label="How it works">
+  <p class="section-label">How it works</p>
+  <h2 class="section-headline">SMS dispatch that runs your rules, not ours.</h2>
+  <div class="feature-columns">
+    <div class="feature-list">
+      <div class="feature-row">
+        <span class="feature-num">01</span>
+        <div>
+          <h3 class="feature-title">No app. No portal. No password.</h3>
+          <p class="feature-body">Workers get a text. They reply YES or NO. That's the entire workflow. Nothing to download, nothing to set up on their end.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">02</span>
+        <div>
+          <h3 class="feature-title">One targeted offer at a time</h3>
+          <p class="feature-body">Not a blast. CrewDriver works through your roster in priority order — seniority, availability, your preferences — until the shift is filled.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">03</span>
+        <div>
+          <h3 class="feature-title">Workers confirm themselves</h3>
+          <p class="feature-body">Every placement is the worker's own decision. No forced confirmations. Every reply logged and timestamped.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">04</span>
+        <div>
+          <h3 class="feature-title">Pay per confirmed placement</h3>
+          <p class="feature-body">$3 USD per booking. No monthly fee, no minimum. You only pay when someone confirms a shift.</p>
+        </div>
+      </div>
+    </div>
+    <div class="sms-panel" role="img" aria-label="Example SMS dispatch exchange">
+      <div class="sms-panel-header">
+        <span class="sms-panel-title">CrewDriver · Rogers Arena</span>
+        <span class="sms-panel-meta">Sat Nov 9 · Stage Crew</span>
+      </div>
+      <div class="sms-panel-body">
+        <div class="sms-row">
+          <span class="sms-tag">Offer</span>
+          <div class="sms-msg">Hi Sarah — shift available Sat Nov 9, 8am–5pm at Rogers Arena. Load-in / rigging. $38/hr union rate. Reply YES to confirm, NO to pass.</div>
+        </div>
+        <div class="sms-row">
+          <span class="sms-tag">Reply</span>
+          <div class="sms-msg reply">YES</div>
+        </div>
+        <div class="sms-row">
+          <span class="sms-tag">Sent</span>
+          <div class="sms-msg confirm">Confirmed for Saturday. Crew call Gate 6 at 7:45am. See you then.</div>
+        </div>
+      </div>
+      <div class="sms-panel-footer">
+        <span class="sms-status"><span class="sms-status-dot"></span>1 offer sent · 1 confirmation · seniority position 3</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="who-section" aria-label="Who CrewDriver is for">
+  <p class="section-label">Who it's for</p>
+  <h2 class="section-headline" style="font-family: 'ChunkFive', serif; font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--white); margin-bottom: 0; line-height: 1.1;">Built for the people who do the dispatch.</h2>
+  <div class="who-grid">
+    <div class="who-card">
+      <p class="who-role">Labour Coordinator</p>
+      <h3 class="who-name">Lucy</h3>
+      <p class="who-body">You're holding the phone at 11pm trying to fill a Friday shift. CrewDriver runs the call-out so you can manage the relationships — the part that actually needs you.</p>
+    </div>
+    <div class="who-card">
+      <p class="who-role">Production Manager</p>
+      <h3 class="who-name">Pam</h3>
+      <p class="who-body">You need shifts covered and a record of how they were filled. CrewDriver logs every offer, every response — so when a question comes up, you have the answer.</p>
+    </div>
+    <div class="who-card">
+      <p class="who-role">Owner / Operator</p>
+      <h3 class="who-name">Tina</h3>
+      <p class="who-body">You care about how your crew is treated. CrewDriver was built on the same values: workers confirm themselves, no forced placement, $3 per booking.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="demo" aria-label="Call to action">
+  <h2>Your crew. Your rules.</h2>
+  <p>Try CrewDriver with your own roster — no commitment, no credit card, no sales call before you see it work.</p>
+  <div class="cta-row">
+    <a href="#" class="btn-white">Try the Demo</a>
+    <a href="#" class="btn-ghost-white">Schedule a Call</a>
+    <a href="#" class="btn-ghost-white">Watch the Video</a>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="wordmark">Crew<span class="green">Driver</span></a>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 CrewDriver. Built for the crew.</p>
+</footer>
+
+</body>
+</html>
