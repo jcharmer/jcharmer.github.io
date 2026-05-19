@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CrewDriver — Call-out automation for live event production. Dispatch your crew by SMS, in order, with workers confirming themselves. Built for AV companies and IATSE union halls.">
+<title>CrewDriver — Call-out automation for live event production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ── Reset & Base ──────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --green:        #5CB85C;
+  --dark-green:   #276B57;
+  --near-black:   #141414;
+  --black:        #0d0d0d;
+  --charcoal:     #1c1c1c;
+  --mid:          #2a2a2a;
+  --body-text:    #363636;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-body:    'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --gap-section:  96px;
+  --gap-page:     60px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--near-black);
+  color: rgba(255,255,255,0.85);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+
+/* ── Typography helpers ────────────────────────────────── */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0.5px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--green);
+  margin-bottom: 20px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 16px;
+}
+
+.section-label--light {
+  color: rgba(255,255,255,0.45);
+}
+
+.accent-rule {
+  width: 40px;
+  height: 2px;
+  background: rgba(92,184,92,0.5);
+  margin-bottom: 28px;
+}
+
+
+/* ── Section scaffolding ───────────────────────────────── */
+.section {
+  padding: var(--gap-section) var(--gap-page);
+}
+
+.section--dark     { background: var(--near-black); }
+.section--darker   { background: var(--black); }
+.section--charcoal { background: var(--charcoal); }
+.section--green    { background: var(--dark-green); }
+
+
+/* ── Buttons ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 16px 32px;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.1s ease;
+  line-height: 1;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--green);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: #4da84d;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+.btn--secondary:hover {
+  border-color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.06);
+}
+
+.btn--white {
+  background: #fff;
+  color: var(--dark-green);
+}
+
+.btn--white:hover {
+  background: #e8f5e8;
+}
+
+.btn--outline-white {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.5);
+}
+
+.btn--outline-white:hover {
+  border-color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+.btn--text {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: 500;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  transition: color 0.18s ease;
+}
+
+.btn--text:hover {
+  color: rgba(255,255,255,0.9);
+}
+
+.btn--text:hover .play-circle {
+  border-color: rgba(255,255,255,0.7);
+}
+
+.play-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: border-color 0.18s ease;
+}
+
+
+/* ── Nav ───────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  padding: 0 var(--gap-page);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(20,20,20,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.nav__wordmark {
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nav__wordmark span {
+  color: var(--green);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav__link {
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.18s ease;
+}
+
+.nav__link:hover {
+  color: rgba(255,255,255,0.85);
+}
+
+.nav__cta {
+  background: var(--green);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 20px;
+  transition: background 0.18s ease;
+}
+
+.nav__cta:hover {
+  background: #4da84d;
+}
+
+/* Hamburger */
+.nav__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav__hamburger span {
+  display: block;
+  height: 2px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 1px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.nav__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
+.nav__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav__mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: rgba(20,20,20,0.99);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 24px var(--gap-page);
+  flex-direction: column;
+  gap: 20px;
+  z-index: 99;
+}
+
+.nav__mobile-menu.is-open {
+  display: flex;
+}
+
+.nav__mobile-link {
+  color: rgba(255,255,255,0.65);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: color 0.18s ease;
+}
+
+.nav__mobile-link:last-child {
+  border-bottom: none;
+}
+
+.nav__mobile-cta {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+
+/* ── Hero ──────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/crewdriver/images/hero-arena.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  z-index: 0;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(8,12,18,0.88) 0%,
+    rgba(8,12,18,0.55) 45%,
+    rgba(8,12,18,0.20) 100%
+  );
+  z-index: 1;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 80px var(--gap-page);
+  max-width: 700px;
+}
+
+.hero__headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 80px;
+  line-height: 0.98;
+  color: #fff;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hero__headline em {
+  color: var(--green);
+  font-style: italic;
+}
+
+.hero__sub {
+  font-size: 19px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 44px;
+  max-width: 520px;
+}
+
+.cta-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero__bottom-rule {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green) 0%, rgba(92,184,92,0.3) 60%, transparent 100%);
+  z-index: 3;
+}
+
+
+/* ── Proof bar ─────────────────────────────────────────── */
+.proof-bar {
+  background: var(--near-black);
+  padding: 32px var(--gap-page);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  overflow-x: auto;
+}
+
+.stat {
+  flex: 1;
+  min-width: 120px;
+  padding: 0 40px 0 0;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  margin-right: 40px;
+}
+
+.stat:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.stat__num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 36px;
+  color: var(--green);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.stat__label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.32);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 5px;
+}
+
+
+/* ── Problem ───────────────────────────────────────────── */
+.problem-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.problem__headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 52px;
+  color: #fff;
+  margin-bottom: 24px;
+  line-height: 1.0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.problem__body {
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 20px;
+}
+
+.pain-list {
+  list-style: none;
+  margin-top: 28px;
+}
+
+.pain-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 15px;
+  color: rgba(255,255,255,0.58);
+  line-height: 1.5;
+}
+
+.pain-list li:last-child {
+  border-bottom: none;
+}
+
+.pain-icon {
+  color: rgba(255,100,100,0.65);
+  font-size: 13px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  font-style: normal;
+}
+
+/* Dispatch board visual */
+.dispatch-board {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+  font-family: 'Courier New', 'Courier', monospace;
+  font-size: 12px;
+}
+
+.board__header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.38);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.board__row {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.48);
+  align-items: center;
+}
+
+.board__row:last-of-type { border-bottom: none; }
+
+.board__name    { flex: 1.5; }
+.board__status  { flex: 1; }
+.board__calls   { flex: 0.8; text-align: right; color: rgba(255,100,100,0.6); }
+
+.status--confirm { color: rgba(92,184,92,0.9); }
+.status--missed  { color: rgba(255,100,100,0.65); }
+.status--calling { color: rgba(255,180,50,0.85); }
+.status--waiting { color: rgba(255,255,255,0.28); }
+
+.board__caption {
+  margin-top: 14px;
+  font-size: 11px;
+  color: rgba(255,80,80,0.5);
+  font-family: var(--font-body);
+  letter-spacing: 0;
+}
+
+
+/* ── How It Works ──────────────────────────────────────── */
+.how-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.how__headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 52px;
+  color: #fff;
+  margin-bottom: 48px;
+  line-height: 1.0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.step {
+  display: flex;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.step:first-of-type {
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.step__num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 40px;
+  color: var(--green);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 52px;
+  letter-spacing: 1px;
+}
+
+.step__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.step__desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+}
+
+/* Phone mockup */
+.phone-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 48px;
+}
+
+.phone {
+  width: 284px;
+  background: #1a1a1a;
+  border-radius: 38px;
+  border: 2px solid rgba(255,255,255,0.12);
+  padding: 16px 0 24px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.65);
+}
+
+.phone__notch {
+  width: 80px;
+  height: 6px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+  margin: 0 auto 20px;
+}
+
+.phone__status {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 10px;
+}
+
+.phone__header {
+  background: #111;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 16px;
+}
+
+.sms-thread {
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bubble {
+  max-width: 82%;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.bubble--out {
+  background: var(--dark-green);
+  color: rgba(255,255,255,0.9);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble--in {
+  background: #2a2a2a;
+  color: rgba(255,255,255,0.8);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.bubble--in.is-confirmed {
+  border-color: rgba(92,184,92,0.45);
+  color: var(--green);
+  font-weight: 700;
+}
+
+.bubble-time {
+  font-size: 10px;
+  color: rgba(255,255,255,0.22);
+  align-self: center;
+}
+
+.phone__badge {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 10px;
+  color: rgba(92,184,92,0.65);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+
+/* ── Proof / Testimonials ──────────────────────────────── */
+.proof__headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 52px;
+  color: #fff;
+  line-height: 1.0;
+  margin-bottom: 48px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.quote-card {
+  background: var(--charcoal);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top: 3px solid var(--green);
+  padding: 40px;
+}
+
+.quote-card__mark {
+  display: none;
+}
+
+.quote-card__logo {
+  width: 48px;
+  height: 48px;
+  margin-top: 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  /* Replace with: background-image: url('images/logo-iatse.png'); background-size: contain; background-repeat: no-repeat; background-position: center; */
+}
+
+.quote-card__text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.82);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.quote-card__attr {
+  font-size: 13px;
+  color: rgba(255,255,255,0.38);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.quote-card__attr strong {
+  color: rgba(255,255,255,0.68);
+  display: block;
+  margin-bottom: 3px;
+  font-style: normal;
+}
+
+
+/* ── Who It's For ──────────────────────────────────────── */
+.who__headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 52px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  line-height: 1.0;
+  margin-bottom: 12px;
+}
+
+.who__sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.48);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.persona-card {
+  background: var(--charcoal);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.persona-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(92,184,92,0.25);
+}
+
+.persona-card__role {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.persona-card__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.persona-card__desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.48);
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+.persona-card__need {
+  font-size: 13px;
+  color: rgba(92,184,92,0.82);
+  font-weight: 500;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.persona-card__need::before {
+  content: '→';
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+
+/* ── Bottom CTA ────────────────────────────────────────── */
+.cta-section {
+  background: var(--dark-green);
+  padding: var(--gap-section) var(--gap-page);
+  position: relative;
+  overflow: hidden;
+  border-top: 3px solid rgba(92,184,92,0.38);
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: rgba(92,184,92,0.03);
+  pointer-events: none;
+}
+
+.cta-section::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 40%;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(92,184,92,0.02);
+  pointer-events: none;
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+}
+
+.cta__headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 64px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  line-height: 0.96;
+  margin-bottom: 20px;
+}
+
+.cta__sub {
+  font-size: 18px;
+  color: rgba(255,255,255,0.68);
+  margin-bottom: 40px;
+  line-height: 1.65;
+}
+
+.cta-trio {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+/* ── Footer ────────────────────────────────────────────── */
+footer {
+  background: var(--black);
+  padding: 40px var(--gap-page);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer__mark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+}
+
+.footer__mark span {
+  color: var(--green);
+}
+
+.footer__links {
+  display: flex;
+  gap: 28px;
+}
+
+.footer__links a {
+  color: rgba(255,255,255,0.28);
+  font-size: 13px;
+  transition: color 0.18s ease;
+}
+
+.footer__links a:hover {
+  color: rgba(255,255,255,0.65);
+}
+
+.footer__copy {
+  font-size: 12px;
+  color: rgba(255,255,255,0.18);
+}
+
+
+/* ── Video Modal ───────────────────────────────────────── */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-modal[hidden] { display: none; }
+
+.video-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  cursor: pointer;
+}
+
+.video-modal__container {
+  position: relative;
+  z-index: 1;
+  width: min(90vw, 1000px);
+  background: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.video-modal__close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.video-modal__close:hover { color: #fff; }
+
+.video-modal__frame {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-modal__frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+
+/* ── Responsive ────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 900px) {
+  :root {
+    --gap-section: 72px;
+    --gap-page: 40px;
+  }
+
+  .problem-layout,
+  .how-layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .testimonial-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .persona-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero__headline {
+    font-size: 52px;
+  }
+
+  .proof-bar {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .stat {
+    flex: 0 0 calc(50% - 12px);
+    border-right: none;
+    margin-right: 0;
+    padding: 0;
+  }
+
+  .phone-wrap {
+    padding-top: 0;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  :root {
+    --gap-section: 56px;
+    --gap-page: 24px;
+  }
+
+  /* Nav: show hamburger, hide links */
+  .nav__links {
+    display: none;
+  }
+
+  .nav__hamburger {
+    display: flex;
+  }
+
+  .nav {
+    padding: 0 24px;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100svh;
+    align-items: flex-end;
+    padding-bottom: 40px;
+  }
+
+  .hero__content {
+    padding: 60px 24px 0;
+  }
+
+  .hero__headline {
+    font-size: 38px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero__sub {
+    font-size: 16px;
+  }
+
+  .cta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn--text {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  /* Proof bar */
+  .proof-bar {
+    padding: 28px 24px;
+  }
+
+  .stat {
+    flex: 0 0 calc(50% - 8px);
+  }
+
+  /* Sections */
+  .problem__headline,
+  .how__headline,
+  .proof__headline,
+  .who__headline {
+    font-size: 38px;
+  }
+
+  .cta__headline {
+    font-size: 44px;
+  }
+
+  /* Persona grid: single column on small screens */
+  .persona-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Quote card padding */
+  .quote-card {
+    padding: 28px 24px;
+  }
+
+  /* Footer stack */
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 32px 24px;
+  }
+
+  .footer__links {
+    gap: 20px;
+  }
+}
+
+/* Very small */
+@media (max-width: 380px) {
+  .hero__headline {
+    font-size: 32px;
+  }
+
+  .stat {
+    flex: 0 0 100%;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────── -->
+<nav class="nav" role="banner">
+  <a href="/crewdriver/" class="nav__wordmark" aria-label="CrewDriver home">Crew<span>Driver</span></a>
+
+  <div class="nav__links" role="navigation" aria-label="Main navigation">
+    <a href="#how-it-works" class="nav__link">How It Works</a>
+    <a href="/crewdriver/pricing/"      class="nav__link">Pricing</a>
+    <a href="/crewdriver/union/"        class="nav__link">Union Halls</a>
+    <a href="#demo"         class="nav__cta">Try the Demo</a>
+  </div>
+
+  <button class="nav__hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-mobile">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<div class="nav__mobile-menu" id="nav-mobile" role="navigation" aria-label="Mobile navigation">
+  <a href="#how-it-works" class="nav__mobile-link">How It Works</a>
+  <a href="/crewdriver/pricing/"      class="nav__mobile-link">Pricing</a>
+  <a href="/crewdriver/union/"        class="nav__mobile-link">Union Halls</a>
+  <a href="#demo"         class="nav__mobile-cta">Try the Demo</a>
+</div>
+
+
+<!-- ── Hero ─────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero__bg" role="img" aria-label="Empty arena during load-in with single work light"></div>
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <p class="eyebrow">Call-out automation for live event production</p>
+    <h1 class="hero__headline" id="hero-heading">
+      Automation is a dirty word.<br>So is doing it <em>by hand.</em>
+    </h1>
+    <p class="hero__sub">Your call-out goes out in the right order. Workers confirm by text. No callbacks, no app, no midnight phone calls.</p>
+    <div class="cta-row">
+      <a href="#demo"     class="btn btn--primary">Try the Demo</a>
+      <button class="btn btn--secondary" onclick="openVideoModal()" aria-label="Watch the product video">
+        <span class="play-circle" aria-hidden="true">▶</span>
+        Watch the Video
+      </button>
+      <a href="#schedule" class="btn btn--text">Schedule a Call</a>
+    </div>
+  </div>
+  <div class="hero__bottom-rule" aria-hidden="true"></div>
+</section>
+
+
+<!-- ── Proof bar ─────────────────────────────────────────── -->
+<div class="proof-bar" role="region" aria-label="Key stats">
+  <div class="stat">
+    <div class="stat__num">2.2M</div>
+    <div class="stat__label">Texts sent</div>
+  </div>
+  <div class="stat">
+    <div class="stat__num">150k+</div>
+    <div class="stat__label">Successful placements</div>
+  </div>
+  <div class="stat">
+    <div class="stat__num">5+ yrs</div>
+    <div class="stat__label">Rogers Arena</div>
+  </div>
+  <div class="stat">
+    <div class="stat__num">1.1</div>
+    <div class="stat__label">Avg. offers per placement</div>
+  </div>
+</div>
+
+
+<!-- ── Problem ───────────────────────────────────────────── -->
+<section class="section section--dark" aria-labelledby="problem-heading">
+  <div class="problem-layout">
+    <div>
+      <p class="section-label">The Problem</p>
+      <div class="accent-rule" aria-hidden="true"></div>
+      <h2 class="problem__headline" id="problem-heading">
+        You know exactly who to call.<br>The problem is calling them.
+      </h2>
+      <p class="problem__body">
+        You've got a list of people who trust you. You know who to call first, who needs notice, who'll pick up on a Sunday. That knowledge lives in your head — and right now, you're spending half your day protecting it by hand.
+      </p>
+      <ul class="pain-list" aria-label="Common pain points">
+        <li><i class="pain-icon" aria-hidden="true">✕</i> Calling down a 40-person list for a Friday night shift</li>
+        <li><i class="pain-icon" aria-hidden="true">✕</i> Workers getting texts at midnight when you're scrambling</li>
+        <li><i class="pain-icon" aria-hidden="true">✕</i> No record of who was offered, who declined, who ghosted</li>
+        <li><i class="pain-icon" aria-hidden="true">✕</i> Seniority rules enforced manually — one mistake and there's a grievance</li>
+        <li><i class="pain-icon" aria-hidden="true">✕</i> Spreadsheets that only you understand</li>
+      </ul>
+    </div>
+
+    <div aria-hidden="true">
+      <div class="dispatch-board" role="img" aria-label="Manual dispatch board showing unfilled shifts">
+        <div class="board__header">
+          <span>Fri 7PM — Rogers Arena — 12 positions open</span>
+          <span>Manual dispatch in progress</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">Sarah M.</span>
+          <span class="board__status status--confirm">✓ Confirmed</span>
+          <span class="board__calls">1</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">Dave T.</span>
+          <span class="board__status status--missed">No answer</span>
+          <span class="board__calls">3 calls</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">Kai R.</span>
+          <span class="board__status status--calling">Calling now...</span>
+          <span class="board__calls">1</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">Tom W.</span>
+          <span class="board__status status--waiting">Not called yet</span>
+          <span class="board__calls">—</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">Ana S.</span>
+          <span class="board__status status--waiting">Not called yet</span>
+          <span class="board__calls">—</span>
+        </div>
+        <div class="board__row">
+          <span class="board__name">+ 28 more</span>
+          <span class="board__status status--waiting">Waiting</span>
+          <span class="board__calls">—</span>
+        </div>
+        <p class="board__caption">⚠ 3 hours to shift start. 11 positions unfilled.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── How It Works ──────────────────────────────────────── -->
+<section class="section section--green" id="how-it-works" aria-labelledby="how-heading">
+  <div class="how-layout">
+    <div>
+      <p class="section-label section-label--light">How It Works</p>
+      <h2 class="how__headline" id="how-heading">
+        Three steps.<br>Your crew.<br>Your rules.
+      </h2>
+      <ol style="list-style:none;">
+        <li class="step">
+          <div class="step__num" aria-hidden="true">01</div>
+          <div>
+            <h3 class="step__title">Add your crew</h3>
+            <p class="step__desc">Import your existing list. Workers get a single text — they reply YES to opt in. No app download. No account creation. Just SMS.</p>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step__num" aria-hidden="true">02</div>
+          <div>
+            <h3 class="step__title">Send the call-out</h3>
+            <p class="step__desc">Set the shift details. Offers go out in your order — seniority, rotation, preference. One offer per position at a time.</p>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step__num" aria-hidden="true">03</div>
+          <div>
+            <h3 class="step__title">Workers confirm by SMS</h3>
+            <p class="step__desc">They reply from any phone. No portal. No password. No app. The crew confirms themselves — and you're done.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="phone-wrap" aria-hidden="true">
+      <div class="phone">
+        <div class="phone__notch"></div>
+        <div class="phone__status">
+          <span>9:41 AM</span>
+          <span>CrewDriver ●</span>
+        </div>
+        <div class="phone__header">Messages — CrewDriver</div>
+        <div class="sms-thread">
+          <div class="bubble bubble--out">Hi Sarah — rigger needed at Rogers Arena, Fri Nov 8 @ 7PM. Load-in. Reply YES to confirm. — CrewDriver</div>
+          <div class="bubble-time">9:41 AM</div>
+          <div class="bubble bubble--in is-confirmed">YES</div>
+          <div class="bubble-time">9:43 AM · 2 min later</div>
+          <div class="bubble bubble--out">Confirmed ✓ Shift details sent to sarah@... See you Friday.</div>
+        </div>
+        <div class="phone__badge">✓ 1 offer. 1 confirmation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── Social Proof ───────────────────────────────────────── -->
+<section class="section section--darker" aria-labelledby="proof-heading">
+  <p class="section-label">Proof</p>
+  <div class="accent-rule" aria-hidden="true"></div>
+  <h2 class="proof__headline" id="proof-heading">
+    Used at Rogers Arena.<br>The 2019 Superbowl.<br>Crew halls across North America.
+  </h2>
+  <div class="testimonial-grid">
+    <article class="quote-card">
+      <span class="quote-card__mark" aria-hidden="true">"</span>
+      <p class="quote-card__text">I love to sit back and watch the confirmations come in while I'm on the phone talking with crew about their career development.</p>
+      <p class="quote-card__attr">
+        <strong>Matt Lees, Labour Coordinator</strong>
+        Riggit / CrewCall Services — multi-year user
+      </p>
+      <div class="quote-card__logo" aria-hidden="true"></div>
+    </article>
+    <article class="quote-card">
+      <span class="quote-card__mark" aria-hidden="true">"</span>
+      <p class="quote-card__text">I was heading out on site and threw out a crew call and had it filled in less than an hour. Incredible.</p>
+      <p class="quote-card__attr">
+        <strong>Anna Nissen, Labour Coordinator</strong>
+        ShowMeAV
+      </p>
+      <div class="quote-card__logo" aria-hidden="true"></div>
+    </article>
+  </div>
+</section>
+
+
+<!-- ── Who It's For ──────────────────────────────────────── -->
+<section class="section section--dark" aria-labelledby="who-heading">
+  <p class="section-label">Who It's For</p>
+  <div class="accent-rule" aria-hidden="true"></div>
+  <h2 class="who__headline" id="who-heading">Built for people<br>who know their crew.</h2>
+  <p class="who__sub">Not for companies that don't value the people they call. Not for whoever's cheapest. For operations that run on relationships.</p>
+
+  <div class="persona-grid">
+    <article class="persona-card">
+      <p class="persona-card__role">Labour Coordinator</p>
+      <h3 class="persona-card__name">"Lucy"</h3>
+      <p class="persona-card__desc">You are the person who knows the list, remembers the history, and protects the relationships. CrewDriver makes you faster — not replaceable.</p>
+      <p class="persona-card__need">Dispatch in order, on time, without the phone calls.</p>
+    </article>
+    <article class="persona-card">
+      <p class="persona-card__role">Production Manager</p>
+      <h3 class="persona-card__name">"Pam"</h3>
+      <p class="persona-card__desc">You need shifts covered without drama. You don't have time to babysit the booking process — you need to know it's handled.</p>
+      <p class="persona-card__need">Confirmed crew before you pick up your headset.</p>
+    </article>
+    <article class="persona-card">
+      <p class="persona-card__role">Owner / Operator</p>
+      <h3 class="persona-card__name">"Tina"</h3>
+      <p class="persona-card__desc">Small company, lots of moving parts. You do the booking and the show. You're skeptical of software promises because you've been burned before.</p>
+      <p class="persona-card__need">Simple pricing, no app friction, easy to explain to crew.</p>
+    </article>
+  </div>
+</section>
+
+
+<!-- ── Bottom CTA ────────────────────────────────────────── -->
+<section class="cta-section" id="demo" aria-labelledby="cta-heading">
+  <div class="cta-inner">
+    <h2 class="cta__headline" id="cta-heading">Stop doing it<br>by hand.</h2>
+    <p class="cta__sub">Your crew deserves a system that respects the relationship. So do you.</p>
+    <div class="cta-trio">
+      <a href="#demo"     class="btn btn--white">Try the Demo</a>
+      <button class="btn btn--outline-white" onclick="openVideoModal()" aria-label="Watch the product video">
+        <span class="play-circle" style="border-color:rgba(255,255,255,0.5)" aria-hidden="true">▶</span>
+        Watch the Video
+      </button>
+      <a href="#schedule" class="btn btn--text" style="color:rgba(255,255,255,0.65);">Schedule a Call</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── Video Modal ───────────────────────────────────────── -->
+<div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Product video" hidden>
+  <div class="video-modal__backdrop" onclick="closeVideoModal()"></div>
+  <div class="video-modal__container">
+    <button class="video-modal__close" onclick="closeVideoModal()" aria-label="Close video">✕</button>
+    <div class="video-modal__frame">
+      <!-- Replace VIDEO_ID with the actual YouTube video ID when available -->
+      <iframe
+        id="videoIframe"
+        src=""
+        data-src="https://www.youtube.com/embed/w8mOyvJyqhM?autoplay=1&rel=0&modestbranding=1"
+        title="CrewDriver product demo"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ────────────────────────────────────────────── -->
+<footer>
+  <a href="/crewdriver/" class="footer__mark" aria-label="CrewDriver home">Crew<span>Driver</span></a>
+  <nav class="footer__links" aria-label="Footer navigation">
+    <a href="/crewdriver/privacy/">Privacy</a>
+    <a href="/crewdriver/terms/">Terms</a>
+    <a href="/crewdriver/contact/">Contact</a>
+  </nav>
+  <p class="footer__copy">© 2026 CrewDriver. Built for the crew.</p>
+</footer>
+
+
+<!-- ── JS: hamburger toggle ──────────────────────────────── -->
+<script>
+  (function () {
+    var toggle = document.getElementById('nav-toggle');
+    var menu   = document.getElementById('nav-mobile');
+
+    toggle.addEventListener('click', function () {
+      var isOpen = menu.classList.toggle('is-open');
+      toggle.classList.toggle('is-open', isOpen);
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on any menu link click
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        menu.classList.remove('is-open');
+        toggle.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+</script>
+
+<!-- ── JS: video modal ───────────────────────────────────── -->
+<script>
+  function openVideoModal() {
+    var modal = document.getElementById('videoModal');
+    var iframe = document.getElementById('videoIframe');
+    iframe.src = iframe.dataset.src;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.video-modal__close').focus();
+  }
+
+  function closeVideoModal() {
+    var modal = document.getElementById('videoModal');
+    var iframe = document.getElementById('videoIframe');
+    iframe.src = '';
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeVideoModal();
+  });
+</script>
+
+</body>
+</html>
